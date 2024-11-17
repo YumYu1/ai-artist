@@ -1,19 +1,19 @@
-#pip install flask diffusers torch transformers huggingface-hub pillow accelerate 설치가 필요한 라이브러리
 import os
-os.environ["KMPDUPLICATELIBOK"] = "TRUE"
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
-from flask import Flask, request, sendfile, jsonify, sendfromdirectory, render_template
+from flask import Flask, request, send_file, jsonify, render_template
+from diffusers import BitsAndBytesConfig, SD3Transformer2DModel, StableDiffusion3Pipeline
 import torch
 import io
 from PIL import Image
 from huggingface_hub import login
 login("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")
 
-app = Flask(__name)
+app = Flask(__name__)
 
 model_id = "stabilityai/stable-diffusion-3.5-medium"
 
-모델 로드
+# 모델 로드
 try:
     nf4_config = BitsAndBytesConfig(
         load_in_4bit=True,
@@ -45,8 +45,10 @@ def generate_image():
     # 요청이 JSON 데이터인지 확인
     data = request.json
     prompt = data.get('prompt', '')
-    num_inference_steps = data.get('num_inference_steps', 40)
+    num_inference_steps = data.get('num_inference_steps', 20)
     guidance_scale = data.get('guidance_scale', 7.5)
+    height = data.get('height', 768)
+    width = data.get('width', 768)
 
     if not prompt:
         return jsonify(error="No prompt provided"), 400
@@ -56,8 +58,8 @@ def generate_image():
             prompt=prompt,
             num_inference_steps=num_inference_steps,
             guidance_scale=guidance_scale,
-            height = 960,
-            width = 528
+            height=height,
+            width=width
         ).images[0]
     except Exception as e:
         return jsonify(error=f"Model inference failed: {str(e)}"), 500
@@ -68,5 +70,5 @@ def generate_image():
 
     return send_file(img_io, mimetype='image/png')
 
-if __name == '__main':
+if __name__ == '__main__':
     app.run(debug=True)
