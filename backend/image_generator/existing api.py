@@ -7,7 +7,7 @@ import torch
 import io
 from PIL import Image
 from huggingface_hub import login
-login("")#허깅페이스 토큰값
+login("")#허깅페이스 토큰값 입력
 
 app = Flask(__name__)
 
