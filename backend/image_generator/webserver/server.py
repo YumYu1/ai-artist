@@ -8,7 +8,7 @@ pipeline = load_model()
 
 @app.route('/')
 def index():
-    return render_template('api.html')
+    return render_template('index.html')
 
 @app.route('/image/inference', methods=['POST'])
 def generate_image_route():
