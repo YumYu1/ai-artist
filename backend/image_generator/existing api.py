@@ -6,12 +6,11 @@ from diffusers import BitsAndBytesConfig, SD3Transformer2DModel, StableDiffusion
 import torch
 import io
 from PIL import Image
-from huggingface_hub import login
-login("")#허깅페이스 토큰값
+
+# 모델 로컬 경로
+model_path = "./local_models/stable-diffusion-3.5-medium"
 
 app = Flask(__name__)
-
-model_id = "stabilityai/stable-diffusion-3.5-medium"
 
 # 모델 로드
 try:
@@ -21,14 +20,14 @@ try:
         bnb_4bit_compute_dtype=torch.bfloat16
     )
     model_nf4 = SD3Transformer2DModel.from_pretrained(
-        model_id,
+        model_path,
         subfolder="transformer",
         quantization_config=nf4_config,
         torch_dtype=torch.bfloat16
     )
 
     pipeline = StableDiffusion3Pipeline.from_pretrained(
-        model_id,
+        model_path,
         transformer=model_nf4,
         torch_dtype=torch.bfloat16,
     )
@@ -47,8 +46,8 @@ def generate_image():
     prompt = data.get('prompt', '')
     num_inference_steps = data.get('num_inference_steps', 20)
     guidance_scale = data.get('guidance_scale', 7.5)
-    height = data.get('height', 768)
-    width = data.get('width', 768)
+    height = data.get('height', 512)
+    width = data.get('width', 512)
 
     if not prompt:
         return jsonify(error="No prompt provided"), 400
