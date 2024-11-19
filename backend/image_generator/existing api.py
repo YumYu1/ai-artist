@@ -8,7 +8,7 @@ import io
 from PIL import Image
 
 # 모델 로컬 경로
-model_path = "./local_models/stable-diffusion-3.5-medium"
+model_path = "G:/local_models/stable-diffusion-3.5-medium"
 
 app = Flask(__name__)
 
@@ -31,7 +31,9 @@ try:
         transformer=model_nf4,
         torch_dtype=torch.bfloat16,
     )
-    pipeline.enable_model_cpu_offload()
+    #gpu의 메모리가 부족할 때 cpu로 모델로 옮겨 메모리 사용량을 줄일 수 있는 옵션
+    #2070super에서는 사용하지 않으면 메모리 부족으로 실패함
+    #pipeline.enable_model_cpu_offload()
 except Exception as e:
     raise RuntimeError(f"Failed to load the model: {str(e)}") from e
 
