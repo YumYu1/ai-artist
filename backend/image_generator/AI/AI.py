@@ -4,7 +4,7 @@ from PIL import Image
 import io
 
 # 모델 로컬 경로
-model_path = "G:/local_models/stable-diffusion-3.5-medium"
+model_path = "./local_models/stable-diffusion-3.5-medium"
 
 def load_model():
     try:
