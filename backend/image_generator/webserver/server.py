@@ -1,7 +1,9 @@
 from flask import Flask, request, send_file, jsonify, render_template
 from AI.AI import load_model, generate_image
+import os
 
-app = Flask(__name__)
+# Flask 애플리케이션 초기화 시 templates 폴더 경로 설정
+app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), '..', 'templates'))
 
 # 모델 로드
 pipeline = load_model()
